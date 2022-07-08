@@ -1,6 +1,11 @@
 import React, { createContext, useState } from "react";
 import { loginRequest, RegisterRequest } from "./authentication.service";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut,
+  updateProfile,
+} from "firebase/auth";
 
 export const AuthenticationContext = createContext();
 
@@ -9,11 +14,13 @@ export const AuthenticationContextProvider = ({ children }) => {
   const [checkUser, setCheckUser] = useState(true);
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
+  const [profileImg, setProfileImg] = useState(null);
 
   const auth = getAuth();
   onAuthStateChanged(auth, (usr) => {
     if (usr) {
       setUser(usr);
+      setProfileImg(usr.photoURL);
     }
     if (checkUser) {
       setCheckUser(false);
@@ -25,6 +32,7 @@ export const AuthenticationContextProvider = ({ children }) => {
     loginRequest(email, password)
       .then((userCredential) => {
         setUser(userCredential.user);
+        setProfileImg(userCredential.user.profileImg);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -83,6 +91,18 @@ export const AuthenticationContextProvider = ({ children }) => {
       });
   };
 
+  const onProfileImageUpdate = (imageURI) => {
+    // console.log(typeof auth.currentUser);
+    updateProfile(auth.currentUser, { photoURL: imageURI })
+      .then(() => {
+        setProfileImg(imageURI);
+        console.log("Profile Update Successfull");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <AuthenticationContext.Provider
       value={{
@@ -94,6 +114,8 @@ export const AuthenticationContextProvider = ({ children }) => {
         onRegister,
         onLogout,
         checkUser,
+        onProfileImageUpdate,
+        profileImg,
       }}
     >
       {children}
