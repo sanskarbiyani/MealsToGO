@@ -18,7 +18,7 @@ export const Info = styled(Card.Content)`
 
 export const Address = styled.Text`
     font-family: ${(props) => props.theme.fonts.body}
-    font-size: ${(props) => props.theme.fontSizes["body"]};
+    font-size: ${(props) => props.theme.fontSizes.body};
 `;
 
 export const Rating = styled.View`

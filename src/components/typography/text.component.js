@@ -41,6 +41,22 @@ const title = (theme) => `
     padding-bottom: ${theme.space[1]};
 `;
 
+const heading = (theme) => `
+    font-family: ${theme.fonts.heading}
+    font-size: ${theme.fontSizes.h4};
+    font-weight: ${theme.fontWeights.bold};
+    color: ${theme.colors.text.primary};
+    padding-bottom: ${theme.space[1]};
+`;
+
+const subHeading = (theme) => `
+    font-family: ${theme.fonts.heading}
+    font-size: ${theme.fontSizes.h5};
+    font-weight: ${theme.fontWeights.bold};
+    color: ${theme.colors.text.primary};
+    padding-bottom: ${theme.space[1]};
+`;
+
 const variants = {
   body,
   label,
@@ -48,6 +64,8 @@ const variants = {
   error,
   hint,
   title,
+  heading,
+  subHeading,
 };
 
 export const Text = styled.Text`

@@ -1,60 +1,33 @@
+import "./ignoreWarning";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import React from "react";
 import { ThemeProvider } from "styled-components/native";
 import { theme } from "./src/infrastructure/theme";
-import { RestuarantsScreen } from "./src/features/restuarants/screens/resturant.screen";
-import { Text } from "react-native";
 import {
   useFonts as useOswald,
   Oswald_400Regular,
 } from "@expo-google-fonts/oswald";
+import { Navigator } from "./src/infrastructure/navigation/index";
 import { useFonts as useLato, Lato_400Regular } from "@expo-google-fonts/lato";
-import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { SafeArea } from "./src/components/utility/safe-area.component";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { RestaurantsContextProvider } from "./src/services/restaurants/restaurant.context";
-import { LocationContextProvider } from "./src/services/location/location.context";
 
-const TAB_ICONS = {
-  Restaurant: {
-    true: "md-restaurant",
-    false: "md-restaurant-outline",
-  },
-  Map: {
-    true: "md-map",
-    false: "md-map-outline",
-  },
-  Setting: {
-    true: "md-settings",
-    false: "md-settings-outline",
-  },
-};
-const Settings = () => (
-  <SafeArea>
-    <Text>Settings</Text>
-  </SafeArea>
-);
-const Map = () => (
-  <SafeArea>
-    <Text>Map</Text>
-  </SafeArea>
-);
+import { initializeApp } from "firebase/app";
 
-const createScreenOption = (route) => {
-  const iconName = TAB_ICONS[route.name];
-  return {
-    tabBarIcon: ({ size, color, focused }) => {
-      const icon = iconName[focused];
-      return <Ionicons name={icon} size={size} color={color} />;
-    },
-    tabBarActiveTintColor: theme.colors.ui.error,
-    tabBarInactiveTintColor: theme.colors.ui.primary,
-    headerShown: false,
-  };
+import { AuthenticationContextProvider } from "./src/services/authentication/authentication.context";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDa3P42g72hXHxPIH5OcVog_CgmkqJXKTI",
+  authDomain: "mealstogo-4818a.firebaseapp.com",
+  projectId: "mealstogo-4818a",
+  storageBucket: "mealstogo-4818a.appspot.com",
+  messagingSenderId: "227494340633",
+  appId: "1:227494340633:web:d028c31058ebe118b3e288",
 };
+
+initializeApp(firebaseConfig);
 
 export default function App() {
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   const [oswaldLoaded] = useOswald({
     Oswald_400Regular,
   });
@@ -66,24 +39,12 @@ export default function App() {
     return null;
   }
 
-  const Tab = createBottomTabNavigator();
-
   return (
     <>
       <ThemeProvider theme={theme}>
-        <LocationContextProvider>
-          <RestaurantsContextProvider>
-            <NavigationContainer>
-              <Tab.Navigator
-                screenOptions={({ route }) => createScreenOption(route)}
-              >
-                <Tab.Screen name="Restaurant" component={RestuarantsScreen} />
-                <Tab.Screen name="Map" component={Map} />
-                <Tab.Screen name="Setting" component={Settings} />
-              </Tab.Navigator>
-            </NavigationContainer>
-          </RestaurantsContextProvider>
-        </LocationContextProvider>
+        <AuthenticationContextProvider>
+          <Navigator />
+        </AuthenticationContextProvider>
       </ThemeProvider>
       <ExpoStatusBar style="auto" />
     </>
